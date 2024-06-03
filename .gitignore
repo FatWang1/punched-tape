@@ -1,0 +1,9 @@
+# personal config
+cmd/conf/conf.yaml
+
+# ide
+data/
+.idea/
+
+# os
+.DS_Store
