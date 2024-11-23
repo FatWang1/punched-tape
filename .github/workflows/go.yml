@@ -1,0 +1,40 @@
+name: Build & Lint Go Project
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build_and_lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.18
+
+      - name: Install golangci-lint
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.42.1
+
+      - name: Lint
+        run: golangci-lint run ./... # 直接运行golangci-lint检查整个项目目录下的Go代码
+
+      - name: Build
+        run: |
+          GOOS=linux GOARCH=amd64 go build -o flowLite
+
+      - name: Upload binary as artifact
+        if: success()
+        uses: actions/upload-artifact@v2
+        with:
+          name: flowLite-linux-amd64
+          path: ./flowLite

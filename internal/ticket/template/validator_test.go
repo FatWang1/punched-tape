@@ -1,9 +1,10 @@
 package template
 
 import (
-	"github.com/FatWang1/fatwang-go-utils/set"
-	"github.com/FatWang1/flowLite/internal/models"
 	"testing"
+
+	"github.com/FatWang1/fatwang-go-utils/desc/set"
+	"github.com/FatWang1/flowLite/internal/models"
 )
 
 func Test_canTraverse(t *testing.T) {
@@ -58,6 +59,11 @@ func Test_canTraverse(t *testing.T) {
 				},
 				endStepSet: set.Setify("4"),
 			},
+			wantErr: false,
+		},
+		{
+			name:    "",
+			args:    args{},
 			wantErr: false,
 		},
 	}
