@@ -92,7 +92,7 @@ func updateTicket(ticket *models.Ticket, nextStep *models.TicketConfig, endStep 
 func jointlySignUpdater(operator string, ticket *models.Ticket, jointlySignRate float32, nextStep *models.TicketConfig, endStep []string) *models.Ticket {
 	userSet := set.Setify(ticket.OperatedUser...)
 	userSet.Set(ticket.Operator...)
-	passRate := float32(1+len(ticket.OperatedUser)) / float32(len(ticket.Operator))
+	passRate := float32(1+len(ticket.OperatedUser)) / float32(userSet.Len())
 	if passRate < jointlySignRate {
 		ticket.Operator = slice.RemoveListElement(ticket.Operator, operator)
 		ticket.OperatedUser = append(ticket.OperatedUser, operator)

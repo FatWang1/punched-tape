@@ -61,11 +61,6 @@ func Test_canTraverse(t *testing.T) {
 			},
 			wantErr: false,
 		},
-		{
-			name:    "",
-			args:    args{},
-			wantErr: false,
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

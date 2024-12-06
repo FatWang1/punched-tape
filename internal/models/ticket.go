@@ -17,7 +17,7 @@ const (
 type Ticket struct {
 	OrderNum     string
 	Status       string // running/passed/rejected
-	uid          string
+	Uid          string
 	Step         string
 	Operator     []string
 	OperatedUser []string // 在Disposal.SignType为jointly_sign/serial_sign时使用
