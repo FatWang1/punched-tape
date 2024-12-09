@@ -3,10 +3,12 @@ package template
 import (
 	"errors"
 	"fmt"
-	"github.com/FatWang1/fatwang-go-utils/set"
-	"github.com/FatWang1/flowLite/internal/models"
+
+	"github.com/FatWang1/fatwang-go-utils/desc/set"
+	"github.com/FatWang1/punched-tape/internal/models"
 )
 
+// Validator is the interface that wraps the Validate method.
 type Validator interface {
 	Validate(models.TicketTemplate) error
 }
@@ -22,6 +24,7 @@ var (
 	ErrStepEmpty         = errors.New("step is empty")
 	ErrBadSignType       = errors.New("bad sign type")
 	ErrNextStepEmpty     = errors.New("next step is empty in non-end step")
+	ErrBadNextStep       = errors.New("bad next step")
 	ErrEndStepHasNext    = errors.New("end step has next steps")
 	ErrDuplicateStep     = errors.New("duplicate step definition")
 	ErrStartStepNotFound = errors.New("start step not found in configurations")
@@ -42,6 +45,9 @@ func (v *validator) Validate(tpl models.TicketTemplate) error {
 		if c == nil || len(c.Step) == 0 {
 			return ErrBadStepConfig
 		}
+		if len(c.Next) == 0 && !endStepSet.HasKey(c.Step) {
+			return ErrNextStepEmpty
+		}
 		if !v.signTypeSet.HasKey(c.Disposal.SignType) {
 			return ErrBadSignType
 		}
@@ -57,17 +63,17 @@ func (v *validator) Validate(tpl models.TicketTemplate) error {
 		return ErrStartStepNotFound
 	}
 
-	// 验证所有配置步骤可达性
+	// 验证是否存在不可达的步骤
 	if err := validateReachability(tpl.StartStep, stepMap, endStepSet); err != nil {
 		return err
 	}
-
 	return nil
 }
 
 func validateReachability(start string, stepMap map[string]*models.TicketConfig, endStepSet set.Set[string]) error {
 	visited := set.InitSet[string](len(stepMap))
-	queue := []string{start}
+	queue := make([]string, 0, len(stepMap))
+	queue = append(queue, start)
 
 	for len(queue) > 0 {
 		currentStep := queue[0]
@@ -81,9 +87,13 @@ func validateReachability(start string, stepMap map[string]*models.TicketConfig,
 			return fmt.Errorf("%w: %s", ErrUnreachableSteps, currentStep)
 		}
 		if endStepSet.HasKey(currentStep) {
-			continue // 结束步骤，无需进一步探索
+			// 结束步骤
+			continue
 		}
 		for _, next := range config.Next {
+			if next.GetStep() == "" {
+				return ErrBadNextStep
+			}
 			queue = append(queue, next.Step)
 		}
 	}
