@@ -1,4 +1,4 @@
-module github.com/FatWang1/flowLite
+module github.com/FatWang1/punched-tape
 
 go 1.20
 
