@@ -1,5 +1,7 @@
 github.com/FatWang1/fatwang-go-utils v0.0.0-20240930040855-15f90189cd16 h1:PWFOXIT9jltXo5eI0+OilAqYgNKg6lL4IFPd08MOQzc=
 github.com/FatWang1/fatwang-go-utils v0.0.0-20240930040855-15f90189cd16/go.mod h1:9ZGngsSUoCcJttfiWMErlAc3yHbQxRLiW/gpf4Qa8yE=
+github.com/FatWang1/fatwang-go-utils v0.0.0-20241126183608-ce14adcffcd1 h1:GuhPkjDb9VT/3oOVyCVx3SgTC7xX3S+K5kPbFOsF4rk=
+github.com/FatWang1/fatwang-go-utils v0.0.0-20241126183608-ce14adcffcd1/go.mod h1:9ZGngsSUoCcJttfiWMErlAc3yHbQxRLiW/gpf4Qa8yE=
 github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
 github.com/google/go-cmp v0.6.0/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
 github.com/kr/pretty v0.3.0 h1:WgNl7dwNpEZ6jJ9k1snq4pZsg7DOEN8hP9Xw0Tsjwk0=
