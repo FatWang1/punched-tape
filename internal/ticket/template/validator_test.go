@@ -10,7 +10,7 @@ import (
 func Test_canValidateReachability(t *testing.T) {
 	type args struct {
 		start      string
-		stepMap    map[string]*models.TicketConfig
+		stepMap    map[string]*models.StepConfig
 		endStepSet set.Set[string]
 	}
 	tests := []struct {
@@ -22,7 +22,7 @@ func Test_canValidateReachability(t *testing.T) {
 			name: "all is ok",
 			args: args{
 				start: "1",
-				stepMap: map[string]*models.TicketConfig{
+				stepMap: map[string]*models.StepConfig{
 					"1": {
 						Step: "1",
 						Next: []*models.NextStep{
@@ -65,7 +65,7 @@ func Test_canValidateReachability(t *testing.T) {
 			name: "bad next step",
 			args: args{
 				start: "1",
-				stepMap: map[string]*models.TicketConfig{
+				stepMap: map[string]*models.StepConfig{
 					"1": {
 						Step: "1",
 						Next: []*models.NextStep{
@@ -108,7 +108,7 @@ func Test_canValidateReachability(t *testing.T) {
 			name: "unreachable steps",
 			args: args{
 				start: "1",
-				stepMap: map[string]*models.TicketConfig{
+				stepMap: map[string]*models.StepConfig{
 					"1": {
 						Step: "1",
 						Next: []*models.NextStep{
@@ -171,7 +171,7 @@ func Test_validator_Validate(t *testing.T) {
 			name: "StartStep is empty",
 			template: models.TicketTemplate{
 				StartStep: "",
-				Config:    []*models.TicketConfig{},
+				Config:    []*models.StepConfig{},
 			},
 			signTypeSet: set.Setify(""),
 			wantErr:     ErrStartStepEmpty,
@@ -180,7 +180,7 @@ func Test_validator_Validate(t *testing.T) {
 			name: "Config is empty",
 			template: models.TicketTemplate{
 				StartStep: "start",
-				Config:    []*models.TicketConfig{},
+				Config:    []*models.StepConfig{},
 			},
 			signTypeSet: set.Setify(""),
 			wantErr:     ErrConfigEmpty,
@@ -189,7 +189,7 @@ func Test_validator_Validate(t *testing.T) {
 			name: "Bad step config",
 			template: models.TicketTemplate{
 				StartStep: "start",
-				Config: []*models.TicketConfig{
+				Config: []*models.StepConfig{
 					{Step: "", Next: nil},
 				},
 			},
@@ -200,7 +200,7 @@ func Test_validator_Validate(t *testing.T) {
 			name: "Non-end step with no next steps",
 			template: models.TicketTemplate{
 				StartStep: "start",
-				Config: []*models.TicketConfig{
+				Config: []*models.StepConfig{
 					{Step: "start", Next: nil},
 				},
 			},
@@ -211,7 +211,7 @@ func Test_validator_Validate(t *testing.T) {
 			name: "Bad sign type",
 			template: models.TicketTemplate{
 				StartStep: "start",
-				Config: []*models.TicketConfig{
+				Config: []*models.StepConfig{
 					{
 						Step: "start",
 						Disposal: models.Disposal{
@@ -233,7 +233,7 @@ func Test_validator_Validate(t *testing.T) {
 			template: models.TicketTemplate{
 				StartStep: "start",
 				EndStep:   []string{"end"},
-				Config: []*models.TicketConfig{
+				Config: []*models.StepConfig{
 					{Step: "start", Next: []*models.NextStep{{Step: "end"}}},
 					{Step: "end", Next: []*models.NextStep{{Step: "another"}}},
 				},
@@ -246,7 +246,7 @@ func Test_validator_Validate(t *testing.T) {
 			template: models.TicketTemplate{
 				StartStep: "start",
 				EndStep:   []string{"next"},
-				Config: []*models.TicketConfig{
+				Config: []*models.StepConfig{
 					{Step: "start", Next: []*models.NextStep{{Step: "next"}}},
 					{Step: "next", Next: nil},
 					{Step: "next", Next: nil}, // Duplicate
@@ -260,7 +260,7 @@ func Test_validator_Validate(t *testing.T) {
 			template: models.TicketTemplate{
 				StartStep: "notfound",
 				EndStep:   []string{"start"},
-				Config: []*models.TicketConfig{
+				Config: []*models.StepConfig{
 					{Step: "start", Next: nil},
 				},
 			},
@@ -272,7 +272,7 @@ func Test_validator_Validate(t *testing.T) {
 			template: models.TicketTemplate{
 				StartStep: "start",
 				EndStep:   []string{"end"},
-				Config: []*models.TicketConfig{
+				Config: []*models.StepConfig{
 					{
 						Step: "start",
 						Next: []*models.NextStep{
@@ -305,7 +305,7 @@ func Test_validator_Validate(t *testing.T) {
 			name: "Some steps are unreachable",
 			template: models.TicketTemplate{
 				StartStep: "start",
-				Config: []*models.TicketConfig{
+				Config: []*models.StepConfig{
 					{Step: "start", Next: []*models.NextStep{{Step: "next"}}},
 					{Step: "next", Next: []*models.NextStep{{Step: "end"}}},
 					{Step: "end", Next: nil},
@@ -319,7 +319,7 @@ func Test_validator_Validate(t *testing.T) {
 			template: models.TicketTemplate{
 				StartStep: "start",
 				EndStep:   []string{"end"},
-				Config: []*models.TicketConfig{
+				Config: []*models.StepConfig{
 					{
 						Step: "start",
 						Next: []*models.NextStep{

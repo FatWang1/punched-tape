@@ -14,7 +14,7 @@ func TestHelper_Approval(t *testing.T) {
 		admin      bool
 		endStep    []string
 		ticket     *models.Ticket
-		stepConfig map[string]*models.TicketConfig
+		stepConfig map[string]*models.StepConfig
 	}
 	tests := []struct {
 		name    string
@@ -36,7 +36,7 @@ func TestHelper_Approval(t *testing.T) {
 					Operator:     []string{"user"},
 					OperatedUser: nil,
 				},
-				stepConfig: map[string]*models.TicketConfig{
+				stepConfig: map[string]*models.StepConfig{
 					"a": {
 						Disposal: models.Disposal{
 							SignType:      models.AnyoneSign,
@@ -80,7 +80,7 @@ func TestHelper_Approval(t *testing.T) {
 					Operator:     []string{"user"},
 					OperatedUser: nil,
 				},
-				stepConfig: map[string]*models.TicketConfig{
+				stepConfig: map[string]*models.StepConfig{
 					"a": {
 						Disposal: models.Disposal{
 							SignType:      models.AnyoneSign,
@@ -121,7 +121,7 @@ func TestHelper_Approval(t *testing.T) {
 					Operator:     []string{"user"},
 					OperatedUser: nil,
 				},
-				stepConfig: map[string]*models.TicketConfig{
+				stepConfig: map[string]*models.StepConfig{
 					"a": {
 						Disposal: models.Disposal{
 							SignType:      models.AnyoneSign,
@@ -162,7 +162,7 @@ func TestHelper_Approval(t *testing.T) {
 					Operator:     nil,
 					OperatedUser: []string{"user"},
 				},
-				stepConfig: map[string]*models.TicketConfig{
+				stepConfig: map[string]*models.StepConfig{
 					"a": {
 						Disposal: models.Disposal{
 							SignType:      models.AnyoneSign,
@@ -203,7 +203,7 @@ func TestHelper_Approval(t *testing.T) {
 					Operator:     []string{"user"},
 					OperatedUser: nil,
 				},
-				stepConfig: map[string]*models.TicketConfig{
+				stepConfig: map[string]*models.StepConfig{
 					"a": {
 						Disposal: models.Disposal{
 							SignType:      models.AnyoneSign,
@@ -244,7 +244,7 @@ func TestHelper_Approval(t *testing.T) {
 					Operator:     []string{"user"},
 					OperatedUser: nil,
 				},
-				stepConfig: map[string]*models.TicketConfig{
+				stepConfig: map[string]*models.StepConfig{
 					"a": {
 						Disposal: models.Disposal{
 							SignType:      models.AnyoneSign,
@@ -284,7 +284,7 @@ func TestHelper_Approval(t *testing.T) {
 					Operator:     []string{"user"},
 					OperatedUser: nil,
 				},
-				stepConfig: map[string]*models.TicketConfig{
+				stepConfig: map[string]*models.StepConfig{
 					"a": {
 						Disposal: models.Disposal{
 							SignType:      models.AnyoneSign,
@@ -332,7 +332,7 @@ func Test_jointlySignUpdater(t *testing.T) {
 		operator        string
 		ticket          *models.Ticket
 		jointlySignRate float32
-		nextStep        *models.TicketConfig
+		nextStep        *models.StepConfig
 		endStep         []string
 	}
 	tests := []struct {
@@ -349,7 +349,7 @@ func Test_jointlySignUpdater(t *testing.T) {
 					OperatedUser: []string{"c"},
 				},
 				jointlySignRate: 0.60,
-				nextStep: &models.TicketConfig{
+				nextStep: &models.StepConfig{
 					Step: "end",
 				},
 				endStep: []string{"end"},
@@ -368,7 +368,7 @@ func Test_jointlySignUpdater(t *testing.T) {
 					OperatedUser: []string{"c"},
 				},
 				jointlySignRate: 0.70,
-				nextStep: &models.TicketConfig{
+				nextStep: &models.StepConfig{
 					Step: "end",
 				},
 				endStep: []string{"end"},
@@ -394,7 +394,7 @@ func Test_serialSignUpdater(t *testing.T) {
 		operator string
 		ticket   *models.Ticket
 		in2      float32
-		nextStep *models.TicketConfig
+		nextStep *models.StepConfig
 		endStep  []string
 	}
 	tests := []struct {
@@ -410,7 +410,7 @@ func Test_serialSignUpdater(t *testing.T) {
 					Operator:     []string{"a"},
 					OperatedUser: []string{"b"},
 				},
-				nextStep: &models.TicketConfig{
+				nextStep: &models.StepConfig{
 					Step: "next",
 				},
 			},
