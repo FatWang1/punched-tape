@@ -31,14 +31,14 @@ type Disposal struct {
 
 // 发起工单时 可以直接使用模版 或者自定义模版 自定义模版需要
 type TicketTemplate struct {
-	uid       string
-	EndStep   []string        // 结束节点
-	StartStep string          // 开始节点
-	Config    []*TicketConfig // 配置
-	Builtin   bool            // 是否内置
+	Uid       string
+	EndStep   []string      // 结束节点
+	StartStep string        // 开始节点
+	Config    []*StepConfig // 配置
+	Builtin   bool          // 是否内置
 }
 
-type TicketConfig struct {
+type StepConfig struct {
 	Step     string      // 步骤名
 	State    string      // 步骤所属状态
 	Operator []string    // 预设操作人
@@ -46,7 +46,7 @@ type TicketConfig struct {
 	Disposal Disposal    // 处置方式
 }
 
-func (t *TicketConfig) GetNext() []*NextStep {
+func (t *StepConfig) GetNext() []*NextStep {
 	return utils.TernaryOperator(t == nil, nil, t.Next)
 }
 

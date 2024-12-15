@@ -39,7 +39,7 @@ func (v *validator) Validate(tpl models.TicketTemplate) error {
 		return ErrConfigEmpty
 	}
 
-	stepMap := make(map[string]*models.TicketConfig, len(tpl.Config))
+	stepMap := make(map[string]*models.StepConfig, len(tpl.Config))
 	endStepSet := set.Setify(tpl.EndStep...)
 	for _, c := range tpl.Config {
 		if c == nil || len(c.Step) == 0 {
@@ -70,7 +70,7 @@ func (v *validator) Validate(tpl models.TicketTemplate) error {
 	return nil
 }
 
-func validateReachability(start string, stepMap map[string]*models.TicketConfig, endStepSet set.Set[string]) error {
+func validateReachability(start string, stepMap map[string]*models.StepConfig, endStepSet set.Set[string]) error {
 	visited := set.InitSet[string](len(stepMap))
 	queue := make([]string, 0, len(stepMap))
 	queue = append(queue, start)

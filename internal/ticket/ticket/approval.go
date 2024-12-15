@@ -16,13 +16,13 @@ var (
 )
 
 type Approval interface {
-	Approval(next, operation, operator string, ticket *models.Ticket, config *models.TicketConfig) (*models.Ticket, error)
+	Approval(next, operation, operator string, ticket *models.Ticket, config *models.StepConfig) (*models.Ticket, error)
 }
 
 type DisposalHandler interface {
 }
 
-var updateStrategy = map[string]func(operator string, ticket *models.Ticket, jointlySignRate float32, nextStep *models.TicketConfig, endStep []string) *models.Ticket{
+var updateStrategy = map[string]func(operator string, ticket *models.Ticket, jointlySignRate float32, nextStep *models.StepConfig, endStep []string) *models.Ticket{
 	models.JointlySign: jointlySignUpdater,
 	models.SerialSign:  serialSignUpdater,
 	models.AnyoneSign:  anyoneSignUpdater,
@@ -38,7 +38,7 @@ func (h *Helper) Approval(
 	admin bool,
 	endStep []string,
 	ticket *models.Ticket,
-	stepConfig map[string]*models.TicketConfig) (*models.Ticket, error) {
+	stepConfig map[string]*models.StepConfig) (*models.Ticket, error) {
 	if len(next) == 0 || len(operation) == 0 || len(operator) == 0 {
 		return nil, ErrBadArguments
 	}
@@ -74,7 +74,7 @@ func (h *Helper) Approval(
 	return ticket, nil
 }
 
-func updateTicket(ticket *models.Ticket, nextStep *models.TicketConfig, endStep []string) *models.Ticket {
+func updateTicket(ticket *models.Ticket, nextStep *models.StepConfig, endStep []string) *models.Ticket {
 
 	ticket.Step = nextStep.Step
 	endStepSet := set.Setify(endStep...)
@@ -89,7 +89,7 @@ func updateTicket(ticket *models.Ticket, nextStep *models.TicketConfig, endStep 
 	return ticket
 }
 
-func jointlySignUpdater(operator string, ticket *models.Ticket, jointlySignRate float32, nextStep *models.TicketConfig, endStep []string) *models.Ticket {
+func jointlySignUpdater(operator string, ticket *models.Ticket, jointlySignRate float32, nextStep *models.StepConfig, endStep []string) *models.Ticket {
 	userSet := set.Setify(ticket.OperatedUser...)
 	userSet.Set(ticket.Operator...)
 	passRate := float32(1+len(ticket.OperatedUser)) / float32(userSet.Len())
@@ -102,7 +102,7 @@ func jointlySignUpdater(operator string, ticket *models.Ticket, jointlySignRate 
 	return ticket
 }
 
-func serialSignUpdater(operator string, ticket *models.Ticket, _ float32, nextStep *models.TicketConfig, endStep []string) *models.Ticket {
+func serialSignUpdater(operator string, ticket *models.Ticket, _ float32, nextStep *models.StepConfig, endStep []string) *models.Ticket {
 	ticket.Operator = slice.RemoveListElement(ticket.Operator, operator)
 	if len(ticket.Operator) != 0 {
 		ticket.OperatedUser = append(ticket.OperatedUser, operator)
@@ -112,6 +112,6 @@ func serialSignUpdater(operator string, ticket *models.Ticket, _ float32, nextSt
 	return ticket
 }
 
-func anyoneSignUpdater(_ string, ticket *models.Ticket, _ float32, nextStep *models.TicketConfig, endStep []string) *models.Ticket {
+func anyoneSignUpdater(_ string, ticket *models.Ticket, _ float32, nextStep *models.StepConfig, endStep []string) *models.Ticket {
 	return updateTicket(ticket, nextStep, endStep)
 }
