@@ -1,7 +1,7 @@
 package ticket
 
 import (
-	"github.com/FatWang1/punched-tape/internal/models"
+	"github.com/FatWang1/punched-tape/models"
 	"github.com/google/go-cmp/cmp"
 	"testing"
 )
