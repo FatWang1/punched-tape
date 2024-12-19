@@ -1,6 +1,8 @@
 package punched_tape
 
-import "github.com/FatWang1/punched-tape/internal/models"
+import (
+	"github.com/FatWang1/punched-tape/models"
+)
 
 type StepConfigBuilder struct {
 	option *models.StepConfig

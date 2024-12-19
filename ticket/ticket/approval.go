@@ -2,10 +2,10 @@ package ticket
 
 import (
 	"errors"
+	"github.com/FatWang1/punched-tape/models"
 
 	"github.com/FatWang1/fatwang-go-utils/desc/set"
 	"github.com/FatWang1/fatwang-go-utils/desc/slice"
-	"github.com/FatWang1/punched-tape/internal/models"
 )
 
 var (

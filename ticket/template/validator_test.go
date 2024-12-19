@@ -1,10 +1,10 @@
 package template
 
 import (
+	"github.com/FatWang1/punched-tape/models"
 	"testing"
 
 	"github.com/FatWang1/fatwang-go-utils/desc/set"
-	"github.com/FatWang1/punched-tape/internal/models"
 )
 
 func Test_canValidateReachability(t *testing.T) {
