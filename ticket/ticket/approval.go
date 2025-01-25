@@ -2,10 +2,11 @@ package ticket
 
 import (
 	"errors"
+
 	"github.com/FatWang1/punched-tape/models"
 
 	"github.com/FatWang1/fatwang-go-utils/desc/set"
-	"github.com/FatWang1/fatwang-go-utils/desc/slice"
+	"github.com/FatWang1/fatwang-go-utils/utils"
 )
 
 var (
@@ -52,11 +53,11 @@ func (h *Helper) Approval(
 	}
 
 	// todo: 已经操作过的人是否可以 reject？
-	if slice.Contain(ticket.OperatedUser, operator) {
+	if utils.Contain(ticket.OperatedUser, operator) {
 		return nil, ErrAlreadyApproved
 	}
 
-	if !(admin || slice.Contain(ticket.Operator, operator)) {
+	if !(admin || utils.Contain(ticket.Operator, operator)) {
 		return nil, ErrOperatorNotInOperatorList
 	}
 
@@ -94,7 +95,7 @@ func jointlySignUpdater(operator string, ticket *models.Ticket, jointlySignRate 
 	userSet.Set(ticket.Operator...)
 	passRate := float32(1+len(ticket.OperatedUser)) / float32(userSet.Len())
 	if passRate < jointlySignRate {
-		ticket.Operator = slice.RemoveListElement(ticket.Operator, operator)
+		ticket.Operator = utils.RemoveItemByValue(ticket.Operator, operator)
 		ticket.OperatedUser = append(ticket.OperatedUser, operator)
 	} else {
 		ticket = updateTicket(ticket, nextStep, endStep)
@@ -103,7 +104,7 @@ func jointlySignUpdater(operator string, ticket *models.Ticket, jointlySignRate 
 }
 
 func serialSignUpdater(operator string, ticket *models.Ticket, _ float32, nextStep *models.StepConfig, endStep []string) *models.Ticket {
-	ticket.Operator = slice.RemoveListElement(ticket.Operator, operator)
+	ticket.Operator = utils.RemoveItemByValue(ticket.Operator, operator)
 	if len(ticket.Operator) != 0 {
 		ticket.OperatedUser = append(ticket.OperatedUser, operator)
 	} else {
