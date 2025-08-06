@@ -1,3 +1,9 @@
+[![GoDoc](https://pkg.go.dev/badge/github.com/FatWang1/punched-tape?utm_source=godoc)](https://pkg.go.dev/github.com/FatWang1/punched-tape)
+[![Go Report Card](https://goreportcard.com/badge/github.com/fatwang1/punched-tape)](https://goreportcard.com/report/github.com/fatwang1/punched-tape)
+[![codecov](https://codecov.io/github/FatWang1/punched-tape/branch/master/graph/badge.svg)](https://codecov.io/github/FatWang1/punched-tape)
+![GitHub License](https://img.shields.io/github/license/fatwang1/punched-tape)
+
+
 # punched-tape
 
 ## 项目概述
