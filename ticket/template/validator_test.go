@@ -2,6 +2,7 @@ package template
 
 import (
 	"github.com/FatWang1/punched-tape/models"
+	"reflect"
 	"testing"
 
 	"github.com/FatWang1/fatwang-go-utils/desc/set"
@@ -345,6 +346,41 @@ func Test_validator_Validate(t *testing.T) {
 			signTypeSet: set.Setify(""),
 			wantErr:     nil,
 		},
+		{
+			name: "badJointSignRate",
+			template: models.TicketTemplate{
+				StartStep: "start",
+				EndStep:   []string{"end"},
+				Config: []*models.StepConfig{
+					{
+						Step: "start",
+						Next: []*models.NextStep{
+							{
+								Step: "next",
+							},
+						},
+						Disposal: models.Disposal{
+							SignType:      models.JointlySign,
+							JointSignRate: 2,
+						},
+					},
+					{
+						Step: "next",
+						Next: []*models.NextStep{
+							{
+								Step: "end",
+							},
+						},
+					},
+					{
+						Step: "end",
+						Next: nil,
+					},
+				},
+			},
+			signTypeSet: set.Setify(models.JointlySign),
+			wantErr:     ErrBadJointSignRate,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -353,6 +389,27 @@ func Test_validator_Validate(t *testing.T) {
 			}
 			if err := v.Validate(tt.template); (err == nil) != (tt.wantErr == nil) {
 				t.Errorf("Validate() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestNewValidator(t *testing.T) {
+	tests := []struct {
+		name string
+		want Validator
+	}{
+		{
+			name: "all is ok",
+			want: &validator{
+				signTypeSet: models.DisposalSignType,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := NewValidator(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewValidator() = %v, want %v", got, tt.want)
 			}
 		})
 	}

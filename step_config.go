@@ -70,6 +70,23 @@ func (b *DisposalBuilder) SetJointSignRate(rate float32) *DisposalBuilder {
 // Build 构建Disposal对象，包含验证
 func (b *DisposalBuilder) Build() (*models.Disposal, error) {
 	// 验证签名类型
+	if b.option.SignType != "" {
+		validSignTypes := map[string]bool{
+			models.JointlySign: true,
+			models.SerialSign:  true,
+			models.AnyoneSign:  true,
+		}
+		if !validSignTypes[b.option.SignType] {
+			return nil, fmt.Errorf("invalid sign_type: %s", b.option.SignType)
+		}
+
+		// 如果是联合签名，验证比例
+		if b.option.SignType == models.JointlySign {
+			if b.option.JointSignRate <= 0 || b.option.JointSignRate > 1 {
+				return nil, fmt.Errorf("joint_sign_rate must be between 0 and 1")
+			}
+		}
+	}
 
 	return &b.option, nil
 }
