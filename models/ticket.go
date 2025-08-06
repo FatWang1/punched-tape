@@ -15,50 +15,297 @@ const (
 )
 
 type Ticket struct {
-	OrderNum     string
-	Status       string // running/passed/rejected
-	Uid          string
-	Step         string
-	Operator     []string
-	OperatedUser []string // 在Disposal.SignType为jointly_sign/serial_sign时使用
-	Memo         string
+	OrderNum     string   `json:"order_num" gorm:"column:order_num;type:varchar(255);not null"`
+	Status       string   `json:"status" gorm:"column:status;type:varchar(50);not null;default:'running'"` // running/passed/rejected
+	Uid          string   `json:"uid" gorm:"column:uid;type:varchar(255);not null;primaryKey"`
+	Step         string   `json:"step" gorm:"column:step;type:varchar(255);not null"`
+	Operator     []string `json:"operator" gorm:"column:operator;type:json"`
+	OperatedUser []string `json:"operated_user" gorm:"column:operated_user;type:json"` // 在Disposal.SignType为jointly_sign/serial_sign时使用
+	Memo         string   `json:"memo" gorm:"column:memo;type:text"`
+}
+
+// Getter methods for Ticket
+func (t *Ticket) GetOrderNum() string {
+	return utils.TernaryOperator(t == nil, "", t.OrderNum)
+}
+
+func (t *Ticket) GetStatus() string {
+	return utils.TernaryOperator(t == nil, "", t.Status)
+}
+
+func (t *Ticket) GetUid() string {
+	return utils.TernaryOperator(t == nil, "", t.Uid)
+}
+
+func (t *Ticket) GetStep() string {
+	return utils.TernaryOperator(t == nil, "", t.Step)
+}
+
+func (t *Ticket) GetOperator() []string {
+	return utils.TernaryOperator(t == nil, nil, t.Operator)
+}
+
+func (t *Ticket) GetOperatedUser() []string {
+	return utils.TernaryOperator(t == nil, nil, t.OperatedUser)
+}
+
+func (t *Ticket) GetMemo() string {
+	return utils.TernaryOperator(t == nil, "", t.Memo)
+}
+
+// Setter methods for Ticket
+func (t *Ticket) SetOrderNum(orderNum string) {
+	if t != nil {
+		t.OrderNum = orderNum
+	}
+}
+
+func (t *Ticket) SetStatus(status string) {
+	if t != nil {
+		t.Status = status
+	}
+}
+
+func (t *Ticket) SetUid(uid string) {
+	if t != nil {
+		t.Uid = uid
+	}
+}
+
+func (t *Ticket) SetStep(step string) {
+	if t != nil {
+		t.Step = step
+	}
+}
+
+func (t *Ticket) SetOperator(operator []string) {
+	if t != nil {
+		t.Operator = operator
+	}
+}
+
+func (t *Ticket) SetOperatedUser(operatedUser []string) {
+	if t != nil {
+		t.OperatedUser = operatedUser
+	}
+}
+
+func (t *Ticket) SetMemo(memo string) {
+	if t != nil {
+		t.Memo = memo
+	}
+}
+
+// Add methods for slice fields
+func (t *Ticket) AddOperator(operator ...string) {
+	if t != nil {
+		t.Operator = append(t.Operator, operator...)
+	}
+}
+
+func (t *Ticket) AddOperatedUser(operatedUser ...string) {
+	if t != nil {
+		t.OperatedUser = append(t.OperatedUser, operatedUser...)
+	}
 }
 
 type Disposal struct {
-	SignType      string  // jointly_sign/serial_sign/anyone_sign
-	JointSignRate float32 // 仅jointly_sign时使用
+	SignType      string  `json:"sign_type" gorm:"column:sign_type;type:varchar(50);not null"`        // jointly_sign/serial_sign/anyone_sign
+	JointSignRate float32 `json:"joint_sign_rate" gorm:"column:joint_sign_rate;type:float;default:0"` // 仅jointly_sign时使用
+}
+
+// Getter methods for Disposal
+func (d *Disposal) GetSignType() string {
+	return utils.TernaryOperator(d == nil, "", d.SignType)
+}
+
+func (d *Disposal) GetJointSignRate() float32 {
+	return utils.TernaryOperator(d == nil, 0.0, d.JointSignRate)
+}
+
+// Setter methods for Disposal
+func (d *Disposal) SetSignType(signType string) {
+	if d != nil {
+		d.SignType = signType
+	}
+}
+
+func (d *Disposal) SetJointSignRate(rate float32) {
+	if d != nil {
+		d.JointSignRate = rate
+	}
 }
 
 // 发起工单时 可以直接使用模版 或者自定义模版 自定义模版需要
 type TicketTemplate struct {
-	Uid       string
-	EndStep   []string      // 结束节点
-	StartStep string        // 开始节点
-	Config    []*StepConfig // 配置
-	Builtin   bool          // 是否内置
+	Uid       string        `json:"uid" gorm:"column:uid;type:varchar(255);not null;primaryKey"`
+	EndStep   []string      `json:"end_step" gorm:"column:end_step;type:json"`                      // 结束节点
+	StartStep string        `json:"start_step" gorm:"column:start_step;type:varchar(255);not null"` // 开始节点
+	Config    []*StepConfig `json:"config" gorm:"column:config;type:json"`                          // 配置
+	Builtin   bool          `json:"builtin" gorm:"column:builtin;type:boolean;default:false"`       // 是否内置
+}
+
+// Getter methods for TicketTemplate
+func (tt *TicketTemplate) GetUid() string {
+	return utils.TernaryOperator(tt == nil, "", tt.Uid)
+}
+
+func (tt *TicketTemplate) GetEndStep() []string {
+	return utils.TernaryOperator(tt == nil, nil, tt.EndStep)
+}
+
+func (tt *TicketTemplate) GetStartStep() string {
+	return utils.TernaryOperator(tt == nil, "", tt.StartStep)
+}
+
+func (tt *TicketTemplate) GetConfig() []*StepConfig {
+	return utils.TernaryOperator(tt == nil, nil, tt.Config)
+}
+
+func (tt *TicketTemplate) GetBuiltin() bool {
+	return utils.TernaryOperator(tt == nil, false, tt.Builtin)
+}
+
+// Setter methods for TicketTemplate
+func (tt *TicketTemplate) SetUid(uid string) {
+	if tt != nil {
+		tt.Uid = uid
+	}
+}
+
+func (tt *TicketTemplate) SetEndStep(endStep []string) {
+	if tt != nil {
+		tt.EndStep = endStep
+	}
+}
+
+func (tt *TicketTemplate) SetStartStep(startStep string) {
+	if tt != nil {
+		tt.StartStep = startStep
+	}
+}
+
+func (tt *TicketTemplate) SetConfig(config []*StepConfig) {
+	if tt != nil {
+		tt.Config = config
+	}
+}
+
+func (tt *TicketTemplate) SetBuiltin(builtin bool) {
+	if tt != nil {
+		tt.Builtin = builtin
+	}
+}
+
+// Add methods for slice fields
+func (tt *TicketTemplate) AddEndStep(endStep ...string) {
+	if tt != nil {
+		tt.EndStep = append(tt.EndStep, endStep...)
+	}
+}
+
+func (tt *TicketTemplate) AddConfig(config ...*StepConfig) {
+	if tt != nil {
+		tt.Config = append(tt.Config, config...)
+	}
 }
 
 type StepConfig struct {
-	Step     string      // 步骤名
-	State    string      // 步骤所属状态
-	Operator []string    // 预设操作人
-	Next     []*NextStep // 下一节点
-	Disposal Disposal    // 处置方式
+	Step     string      `json:"step" gorm:"column:step;type:varchar(255);not null"`   // 步骤名
+	State    string      `json:"state" gorm:"column:state;type:varchar(255);not null"` // 步骤所属状态
+	Operator []string    `json:"operator" gorm:"column:operator;type:json"`            // 预设操作人
+	Next     []*NextStep `json:"next" gorm:"column:next;type:json"`                    // 下一节点
+	Disposal Disposal    `json:"disposal" gorm:"column:disposal;type:json"`            // 处置方式
 }
 
-func (t *StepConfig) GetNext() []*NextStep {
-	return utils.TernaryOperator(t == nil, nil, t.Next)
+// Getter methods for StepConfig
+func (sc *StepConfig) GetStep() string {
+	return utils.TernaryOperator(sc == nil, "", sc.Step)
+}
+
+func (sc *StepConfig) GetState() string {
+	return utils.TernaryOperator(sc == nil, "", sc.State)
+}
+
+func (sc *StepConfig) GetOperator() []string {
+	return utils.TernaryOperator(sc == nil, nil, sc.Operator)
+}
+
+func (sc *StepConfig) GetNext() []*NextStep {
+	return utils.TernaryOperator(sc == nil, nil, sc.Next)
+}
+
+func (sc *StepConfig) GetDisposal() Disposal {
+	return utils.TernaryOperator(sc == nil, Disposal{}, sc.Disposal)
+}
+
+// Setter methods for StepConfig
+func (sc *StepConfig) SetStep(step string) {
+	if sc != nil {
+		sc.Step = step
+	}
+}
+
+func (sc *StepConfig) SetState(state string) {
+	if sc != nil {
+		sc.State = state
+	}
+}
+
+func (sc *StepConfig) SetOperator(operator []string) {
+	if sc != nil {
+		sc.Operator = operator
+	}
+}
+
+func (sc *StepConfig) SetNext(next []*NextStep) {
+	if sc != nil {
+		sc.Next = next
+	}
+}
+
+func (sc *StepConfig) SetDisposal(disposal Disposal) {
+	if sc != nil {
+		sc.Disposal = disposal
+	}
+}
+
+// Add methods for slice fields
+func (sc *StepConfig) AddOperator(operator ...string) {
+	if sc != nil {
+		sc.Operator = append(sc.Operator, operator...)
+	}
+}
+
+func (sc *StepConfig) AddNext(next ...*NextStep) {
+	if sc != nil {
+		sc.Next = append(sc.Next, next...)
+	}
 }
 
 type NextStep struct {
-	Step      string // 步骤名
-	Operation string // 操作名
+	Step      string `json:"step" gorm:"column:step;type:varchar(255);not null"`           // 步骤名
+	Operation string `json:"operation" gorm:"column:operation;type:varchar(255);not null"` // 操作名
 }
 
-func (n *NextStep) GetStep() string {
-	return utils.TernaryOperator(n == nil, "", n.Step)
+// Getter methods for NextStep
+func (ns *NextStep) GetStep() string {
+	return utils.TernaryOperator(ns == nil, "", ns.Step)
 }
 
-func (n *NextStep) GetOperation() string {
-	return utils.TernaryOperator(n == nil, "", n.Operation)
+func (ns *NextStep) GetOperation() string {
+	return utils.TernaryOperator(ns == nil, "", ns.Operation)
+}
+
+// Setter methods for NextStep
+func (ns *NextStep) SetStep(step string) {
+	if ns != nil {
+		ns.Step = step
+	}
+}
+
+func (ns *NextStep) SetOperation(operation string) {
+	if ns != nil {
+		ns.Operation = operation
+	}
 }

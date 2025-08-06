@@ -3,9 +3,9 @@ package template
 import (
 	"errors"
 	"fmt"
-	"github.com/FatWang1/punched-tape/models"
 
 	"github.com/FatWang1/fatwang-go-utils/desc/set"
+	"github.com/FatWang1/punched-tape/models"
 )
 
 // Validator is the interface that wraps the Validate method.
@@ -17,6 +17,12 @@ type validator struct {
 	signTypeSet set.Set[string]
 }
 
+func NewValidator() Validator {
+	return &validator{
+		signTypeSet: models.DisposalSignType,
+	}
+}
+
 var (
 	ErrStartStepEmpty    = errors.New("start step is empty")
 	ErrConfigEmpty       = errors.New("config is empty")
@@ -26,6 +32,7 @@ var (
 	ErrNextStepEmpty     = errors.New("next step is empty in non-end step")
 	ErrBadNextStep       = errors.New("bad next step")
 	ErrEndStepHasNext    = errors.New("end step has next steps")
+	ErrBadJointSignRate  = errors.New("bad joint sign rate")
 	ErrDuplicateStep     = errors.New("duplicate step definition")
 	ErrStartStepNotFound = errors.New("start step not found in configurations")
 	ErrUnreachableSteps  = errors.New("some steps are unreachable")
@@ -50,6 +57,11 @@ func (v *validator) Validate(tpl models.TicketTemplate) error {
 		}
 		if !v.signTypeSet.HasKey(c.Disposal.SignType) {
 			return ErrBadSignType
+		}
+		if c.Disposal.SignType == models.JointlySign {
+			if c.Disposal.JointSignRate < 0 || c.Disposal.JointSignRate > 1 {
+				return ErrBadJointSignRate
+			}
 		}
 		if len(c.Next) > 0 && endStepSet.HasKey(c.Step) {
 			return ErrEndStepHasNext
