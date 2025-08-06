@@ -7,3 +7,6 @@ data/
 
 # os
 .DS_Store
+
+# test
+coverage.*
