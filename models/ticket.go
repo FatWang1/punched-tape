@@ -15,13 +15,13 @@ const (
 )
 
 type Ticket struct {
-	OrderNum     string   `json:"order_num" gorm:"column:order_num;type:varchar(255);not null"`
-	Status       string   `json:"status" gorm:"column:status;type:varchar(50);not null;default:'running'"` // running/passed/rejected
-	Uid          string   `json:"uid" gorm:"column:uid;type:varchar(255);not null;primaryKey"`
-	Step         string   `json:"step" gorm:"column:step;type:varchar(255);not null"`
-	Operator     []string `json:"operator" gorm:"column:operator;type:json"`
-	OperatedUser []string `json:"operated_user" gorm:"column:operated_user;type:json"` // 在Disposal.SignType为jointly_sign/serial_sign时使用
-	Memo         string   `json:"memo" gorm:"column:memo;type:text"`
+	OrderNum     string   `json:"order_num"`     // 工单号
+	Status       string   `json:"status"`        // running/passed/rejected
+	Uid          string   `json:"uid"`           // 工单唯一标识
+	Step         string   `json:"step"`          // 当前步骤
+	Operator     []string `json:"operator"`      // 操作人列表
+	OperatedUser []string `json:"operated_user"` // 在Disposal.SignType为jointly_sign/serial_sign时使用
+	Memo         string   `json:"memo"`          // 备注
 }
 
 // Getter methods for Ticket
@@ -110,8 +110,8 @@ func (t *Ticket) AddOperatedUser(operatedUser ...string) {
 }
 
 type Disposal struct {
-	SignType      string  `json:"sign_type" gorm:"column:sign_type;type:varchar(50);not null"`        // jointly_sign/serial_sign/anyone_sign
-	JointSignRate float32 `json:"joint_sign_rate" gorm:"column:joint_sign_rate;type:float;default:0"` // 仅jointly_sign时使用
+	SignType      string  `json:"sign_type"`       // jointly_sign/serial_sign/anyone_sign
+	JointSignRate float32 `json:"joint_sign_rate"` // 仅jointly_sign时使用
 }
 
 // Getter methods for Disposal
@@ -138,11 +138,11 @@ func (d *Disposal) SetJointSignRate(rate float32) {
 
 // 发起工单时 可以直接使用模版 或者自定义模版 自定义模版需要
 type TicketTemplate struct {
-	Uid       string        `json:"uid" gorm:"column:uid;type:varchar(255);not null;primaryKey"`
-	EndStep   []string      `json:"end_step" gorm:"column:end_step;type:json"`                      // 结束节点
-	StartStep string        `json:"start_step" gorm:"column:start_step;type:varchar(255);not null"` // 开始节点
-	Config    []*StepConfig `json:"config" gorm:"column:config;type:json"`                          // 配置
-	Builtin   bool          `json:"builtin" gorm:"column:builtin;type:boolean;default:false"`       // 是否内置
+	Uid       string        `json:"uid"`        // 模板唯一标识
+	EndStep   []string      `json:"end_step"`   // 结束节点
+	StartStep string        `json:"start_step"` // 开始节点
+	Config    []*StepConfig `json:"config"`     // 配置
+	Builtin   bool          `json:"builtin"`    // 是否内置
 }
 
 // Getter methods for TicketTemplate
@@ -211,11 +211,11 @@ func (tt *TicketTemplate) AddConfig(config ...*StepConfig) {
 }
 
 type StepConfig struct {
-	Step     string      `json:"step" gorm:"column:step;type:varchar(255);not null"`   // 步骤名
-	State    string      `json:"state" gorm:"column:state;type:varchar(255);not null"` // 步骤所属状态
-	Operator []string    `json:"operator" gorm:"column:operator;type:json"`            // 预设操作人
-	Next     []*NextStep `json:"next" gorm:"column:next;type:json"`                    // 下一节点
-	Disposal Disposal    `json:"disposal" gorm:"column:disposal;type:json"`            // 处置方式
+	Step     string      `json:"step"`     // 步骤名
+	State    string      `json:"state"`    // 步骤所属状态
+	Operator []string    `json:"operator"` // 预设操作人
+	Next     []*NextStep `json:"next"`     // 下一节点
+	Disposal Disposal    `json:"disposal"` // 处置方式
 }
 
 // Getter methods for StepConfig
@@ -284,8 +284,8 @@ func (sc *StepConfig) AddNext(next ...*NextStep) {
 }
 
 type NextStep struct {
-	Step      string `json:"step" gorm:"column:step;type:varchar(255);not null"`           // 步骤名
-	Operation string `json:"operation" gorm:"column:operation;type:varchar(255);not null"` // 操作名
+	Step      string `json:"step"`      // 步骤名
+	Operation string `json:"operation"` // 操作名
 }
 
 // Getter methods for NextStep
