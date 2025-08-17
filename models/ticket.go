@@ -16,6 +16,7 @@ const (
 
 type Ticket struct {
 	OrderNum     string   `json:"order_num"`     // 工单号
+	Name         string   `json:"name"`          // 工单名称
 	Status       string   `json:"status"`        // running/passed/rejected
 	Uid          string   `json:"uid"`           // 工单唯一标识
 	Step         string   `json:"step"`          // 当前步骤
